@@ -37,13 +37,13 @@ class MainActivity : ComponentActivity() {
 fun Greeting(name: String, modifier: Modifier = Modifier) {
     val sdkInfo = Project_Information_SDK()
     val version = sdkInfo.sdkVersion
-
+    val sdkName = sdkInfo.creatorname
 
     Tab(selected = true, onClick = { /*TODO*/ }) {
         
     }
     Text(
-        text = "SDK Version: $version",
+        text = "SDK Version: $version\nSDK Creator: $sdkName",
         modifier=modifier
     )
 }
