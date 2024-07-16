@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CalculatorApp(modifier: Modifier = Modifier) {
     var display by remember { mutableStateOf("") }
-    val sdk = Project_Information_SDK()
+    val sdk = ProjectInformationSDK()
 
     Column(
         modifier = Modifier.padding(25.dp)
