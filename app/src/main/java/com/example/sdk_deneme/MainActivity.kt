@@ -1,3 +1,5 @@
+@file:Suppress("NAME_SHADOWING")
+
 package com.example.sdk_deneme
 
 import android.os.Bundle
