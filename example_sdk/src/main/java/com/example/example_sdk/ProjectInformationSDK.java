@@ -31,4 +31,10 @@ public class ProjectInformationSDK {
             throw new IllegalArgumentException("Division by zero");
         }
     }
+    public static double calculatePercentage(double part, double total) {
+        if (total == 0) {
+            throw new IllegalArgumentException("Total cannot be zero.");
+        }
+        return (part / total) * 100;
+    }
 }

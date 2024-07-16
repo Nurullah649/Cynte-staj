@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -49,9 +50,9 @@ fun CalculatorApp(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        val buttonModifier = Modifier
-            .width(60.dp)
-            .height(40.dp)
+        val modifier = Modifier
+            .width(70.dp)
+            .height(55.dp)
 
         val buttonTextSize = 10.sp
 
@@ -63,7 +64,7 @@ fun CalculatorApp(modifier: Modifier = Modifier) {
             display += " $operation "
         }
 
-        val onClickClear = {
+        val onClickClear = { text: String ->
             display = ""
         }
 
@@ -90,56 +91,106 @@ fun CalculatorApp(modifier: Modifier = Modifier) {
                 display = "Error"
             }
         }
+        Row (
+            modifier = Modifier.padding(16.dp)
+        ){
+            Spacer(modifier = Modifier.width(5.dp))
+            Button(onClick = { onClickClear(display) }, modifier = modifier) {
+                Text(text = "AC")
+            }
+            Spacer(modifier = Modifier.width(0.dp))
+            ToggleButton()
+            Spacer(modifier = Modifier.width(5.dp))
+            Button(onClick = { onClickOperation("%") }, modifier = modifier) {
+                Text(text = "%")
+            }
+            Spacer(modifier = Modifier.width(5.dp))
+            Button(onClick = { onClickOperation("/") }, modifier = modifier) {
+                Text(text = "/")
+            }
+        }
 
         CalculatorButtonRow(
-            buttons = listOf("7", "8", "9", "/"),
+            buttons = listOf("7", "8", "9", "x"),
             onClickNumber = onClickNumber,
             onClickOperation = onClickOperation,
-            buttonModifier = buttonModifier,
+            modifier = modifier,
+            buttonTextSize = buttonTextSize
+        )
+
+        CalculatorButtonRow(
+            buttons = listOf("4", "5", "6", "-"),
+            onClickNumber = onClickNumber,
+            onClickOperation = onClickOperation,
+            modifier = modifier,
             buttonTextSize = buttonTextSize
         )
         CalculatorButtonRow(
-            buttons = listOf("4", "5", "6", "*"),
+            buttons = listOf("1", "2", "3", "+"),
             onClickNumber = onClickNumber,
             onClickOperation = onClickOperation,
-            buttonModifier = buttonModifier,
+            modifier = modifier,
             buttonTextSize = buttonTextSize
         )
-        CalculatorButtonRow(
-            buttons = listOf("1", "2", "3", "-"),
-            onClickNumber = onClickNumber,
-            onClickOperation = onClickOperation,
-            buttonModifier = buttonModifier,
-            buttonTextSize = buttonTextSize
-        )
-        CalculatorButtonRow(
-            buttons = listOf("0", ".", "=", "+"),
-            onClickNumber = onClickNumber,
-            onClickOperation = onClickOperation,
-            onClickEqual = onClickEqual,
-            buttonModifier = buttonModifier,
-            buttonTextSize = buttonTextSize
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = onClickClear,
-            modifier = buttonModifier
-        ) {
-            Text(
-                text = "C",
-                fontSize = buttonTextSize
-            )
+        Row (
+            modifier = Modifier.padding(16.dp)
+        ){
+
+            Button(onClick = { onClickNumber("0") }, modifier = Modifier
+                .width(150.dp)
+                .height(55.dp)) {
+                Text(
+                    text = "0                             ",
+                    fontSize = buttonTextSize
+                )
+            }
+            Spacer(modifier = Modifier.width(5.dp))
+            Button(onClick = { onClickNumber(".") }, modifier = Modifier
+                .width(70.dp)
+                .height(55.dp)) {
+                Text(
+                    text = ".",
+                    fontSize = buttonTextSize
+                )
+            }
+            Spacer(modifier = Modifier.width(5.dp))
+            Button(onClick = { onClickEqual()}, modifier = Modifier
+                .width(70.dp)
+                .height(55.dp)) {
+                Text(
+                    text = "=",
+                    fontSize = buttonTextSize
+                )
+            }
         }
+
     }
 }
+@Composable
+fun ToggleButton() {
+    // State to keep track of the current text
+    var isPlus by remember { mutableStateOf(true) }
 
+    // Function to toggle the text
+    fun toggleText() {
+        isPlus = !isPlus
+    }
+
+    // Composable content
+    Spacer(modifier = Modifier.width(5.dp))
+    Button(onClick = { toggleText() }, modifier = Modifier
+        .width(70.dp)
+        .height(55.dp)) {
+        Text(text = "+/-")
+    }
+}
 @Composable
 fun CalculatorButtonRow(
     buttons: List<String>,
     onClickNumber: (String) -> Unit,
     onClickOperation: (String) -> Unit,
     onClickEqual: (() -> Unit)? = null,
-    buttonModifier: Modifier,
+    modifier: Modifier,
     buttonTextSize: androidx.compose.ui.unit.TextUnit
 ) {
     Row(
@@ -151,11 +202,43 @@ fun CalculatorButtonRow(
                 onClick = {
                     when (button) {
                         in "0".."9", "." -> onClickNumber(button)
-                        "=", "+" , "-", "*", "/" -> onClickEqual?.invoke() ?: onClickOperation(button)
+                        "=" -> onClickEqual?.invoke()
                         else -> onClickOperation(button)
                     }
                 },
-                modifier = buttonModifier
+                modifier = modifier
+            ) {
+                Text(
+                    text = button,
+                    fontSize = buttonTextSize
+                )
+            }
+        }
+    }
+}
+@Composable
+fun CalculatorButtonColumn(
+    buttons: List<String>,
+    onClickNumber: (String) -> Unit,
+    onClickOperation: (String) -> Unit,
+    onClickEqual: (() -> Unit)? = null,
+    modifier: Modifier,
+    buttonTextSize: androidx.compose.ui.unit.TextUnit
+) {
+    Column(
+        modifier = Modifier.padding(16.dp)
+    ) {
+        buttons.forEach { button ->
+            Spacer(modifier = Modifier.width(5.dp))
+            Button(
+                onClick = {
+                    when (button) {
+                        in "0".."9", "." -> onClickNumber(button)
+                        "=" -> onClickEqual?.invoke()
+                        else -> onClickOperation(button)
+                    }
+                },
+                modifier = modifier
             ) {
                 Text(
                     text = button,
